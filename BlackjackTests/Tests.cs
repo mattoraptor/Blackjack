@@ -11,11 +11,22 @@ namespace BlackjackTests
         public void SetUp()
         {
             _consoleWrapper = new TestConsoleWrapper();
-            _game = new Game(_consoleWrapper, new TestCardGenerator());
+            _cardGenerator = new TestCardGenerator();
+            _game = new Game(_consoleWrapper, _cardGenerator);
         }
 
         private Game _game;
         private TestConsoleWrapper _consoleWrapper;
+        private TestCardGenerator _cardGenerator;
+
+        [Test]
+        public void AddsCardFromCardGeneratorToYourHandAndDealersHand()
+        {
+            _cardGenerator.Card = 3;
+            _game.PlayHand();
+            CollectionAssert.Contains(_consoleWrapper.Lines, "The dealer slides another card to you. It's a 3.");
+            CollectionAssert.Contains(_consoleWrapper.Lines, "The dealer adds another card to their hand. It's a 3.");
+        }
 
         [Test]
         public void AfterWelcomeStartsNewHandAndAsksForWager()
@@ -41,7 +52,7 @@ namespace BlackjackTests
             _consoleWrapper.Number = 23;
             _game.PlayHand();
 
-            Assert.True(_consoleWrapper.Lines.Any(line => line.EndsWith("$23)") ));
+            Assert.True(_consoleWrapper.Lines.Any(line => line.EndsWith("$23)")));
         }
 
         [Test]

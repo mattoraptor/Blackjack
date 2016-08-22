@@ -4,9 +4,9 @@ namespace Blackjack
 {
     public class Game
     {
+        private readonly ICardGenerator _cardGenerator;
         private readonly IConsoleWrapper _consoleWrapper;
         private int _money;
-        private readonly ICardGenerator _cardGenerator;
 
         public Game(IConsoleWrapper consoleWrapper, ICardGenerator cardGenerator)
         {
@@ -63,8 +63,7 @@ namespace Blackjack
             var newCard = 0;
             if (input == "h")
             {
-                var random = new Random();
-                newCard = random.Next(1, 14);
+                newCard = _cardGenerator.NextCard();
                 var n = "";
                 if (newCard == 1)
                 {
@@ -80,8 +79,7 @@ namespace Blackjack
 
             if (dealersCards < 17)
             {
-                var random = new Random();
-                newCard = random.Next(1, 14);
+                newCard = _cardGenerator.NextCard();
                 var n = "";
                 if (newCard == 1)
                 {
