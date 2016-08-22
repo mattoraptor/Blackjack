@@ -13,5 +13,10 @@ namespace Blackjack
         {
             return Console.ReadKey().KeyChar.ToString();
         }
+
+        public int GetNumber()
+        {
+            return int.Parse(Console.ReadLine());
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace BlackjackTests
     public class TestConsoleWrapper : IConsoleWrapper
     {
         public List<string> Lines = new List<string>();
+        public int Number = 50;
 
         public void WriteLine(string line)
         {
@@ -15,6 +16,11 @@ namespace BlackjackTests
         public string GetInput()
         {
             return "h";
+        }
+
+        public int GetNumber()
+        {
+            return Number;
         }
     }
 }

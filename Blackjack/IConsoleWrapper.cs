@@ -4,5 +4,7 @@
     {
         void WriteLine(string line);
         string GetInput();
+
+        int GetNumber();
     }
 }

@@ -6,9 +6,11 @@ namespace Blackjack
     {
         private readonly IConsoleWrapper _consoleWrapper;
         private int _money;
+        private readonly ICardGenerator _cardGenerator;
 
-        public Game(IConsoleWrapper consoleWrapper)
+        public Game(IConsoleWrapper consoleWrapper, ICardGenerator cardGenerator)
         {
+            _cardGenerator = cardGenerator;
             _consoleWrapper = consoleWrapper;
         }
 
@@ -27,7 +29,6 @@ namespace Blackjack
                 }
             }
 
-
             _consoleWrapper.WriteLine("You lose.");
             _consoleWrapper.GetInput();
         }
@@ -35,7 +36,7 @@ namespace Blackjack
         public void PlayHand()
         {
             _consoleWrapper.WriteLine("What would you like to wager ($1 to $50)?");
-            var wager = 25;
+            var wager = _consoleWrapper.GetNumber();
             var yourHand = GetNewHand();
 
             _consoleWrapper.WriteLine(
@@ -96,7 +97,7 @@ namespace Blackjack
                 _money -= wager;
                 var loseMessage = yourCards > 21 ? "You busted!" : "You lost!";
                 _consoleWrapper.WriteLine(
-                    $"You had {yourCards} and dealer had {dealersCards}. {loseMessage} You now have ${_money} (-$25)");
+                    $"You had {yourCards} and dealer had {dealersCards}. {loseMessage} You now have ${_money} (-${wager})");
             }
             else if (yourCards == dealersCards)
             {
@@ -111,7 +112,7 @@ namespace Blackjack
             }
         }
 
-        public static string GetCardName(int card)
+        private static string GetCardName(int card)
         {
             if (card == 1)
                 return "Ace";
@@ -124,19 +125,17 @@ namespace Blackjack
             return card.ToString();
         }
 
-        public static int GetCardValue(int card)
+        private static int GetCardValue(int card)
         {
             if (card > 10)
                 return 10;
             return card;
         }
 
-        public static Tuple<int, int> GetNewHand()
+        private Tuple<int, int> GetNewHand()
         {
-            var random = new Random();
-
-            var num1 = random.Next(1, 14);
-            var num2 = random.Next(1, 14);
+            var num1 = _cardGenerator.NextCard();
+            var num2 = _cardGenerator.NextCard();
             return new Tuple<int, int>(num1, num2);
         }
     }

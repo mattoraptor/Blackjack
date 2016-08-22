@@ -45,9 +45,11 @@
   <ItemGroup>
     <Compile Include="ConsoleWrapper.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="ICardGenerator.cs" />
     <Compile Include="IConsoleWrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomCardGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

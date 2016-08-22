@@ -4,6 +4,14 @@ using NUnit.Framework;
 
 namespace BlackjackTests
 {
+    public class TestCardGenerator : ICardGenerator
+    {
+        public int NextCard()
+        {
+            return 10;
+        }
+    }
+
     [TestFixture]
     public class Tests
     {
@@ -11,7 +19,7 @@ namespace BlackjackTests
         public void SetUp()
         {
             _consoleWrapper = new TestConsoleWrapper();
-            _game = new Game(_consoleWrapper);
+            _game = new Game(_consoleWrapper, new TestCardGenerator());
         }
 
         private Game _game;
@@ -33,6 +41,15 @@ namespace BlackjackTests
             _game.Go();
             var count = _consoleWrapper.Lines.Count(line => line.Equals("What would you like to wager ($1 to $50)?"));
             Assert.That(count, Is.GreaterThan(1));
+        }
+
+        [Test]
+        public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage()
+        {
+            _consoleWrapper.Number = 23;
+            _game.PlayHand();
+
+            Assert.True(_consoleWrapper.Lines.Any(line => line.EndsWith("$23)") ));
         }
 
         [Test]
