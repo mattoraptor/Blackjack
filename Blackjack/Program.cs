@@ -2,11 +2,22 @@
 
 namespace Blackjack
 {
-    public class ConsoleWrapper
+    public interface IConsoleWrapper
+    {
+        void WriteLine(string line);
+        string GetInput();
+    }
+
+    public class ConsoleWrapper : IConsoleWrapper
     {
         public void WriteLine(string line)
         {
             Console.WriteLine(line);
+        }
+
+        public string GetInput()
+        {
+            return Console.ReadKey().KeyChar.ToString();
         }
     }
 
@@ -14,8 +25,13 @@ namespace Blackjack
     {
         public static void Main(string[] args)
         {
-            var money = 500;
             var consoleWrapper = new ConsoleWrapper();
+            Go(consoleWrapper);
+        }
+
+        public static void Go(IConsoleWrapper consoleWrapper)
+        {
+            var money = 500;
             consoleWrapper.WriteLine("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000.");
 
             while (money > 0)
@@ -30,12 +46,12 @@ namespace Blackjack
                 consoleWrapper.WriteLine(
                     $"The dealer is showing a {GetCardName(dealerHand.Item1)}. Do you (h)it or (s)tay?");
 
-                var input = Console.ReadKey().KeyChar.ToString();
+                var input = consoleWrapper.GetInput();
                 consoleWrapper.WriteLine("");
                 while (input != "h" && input != "s")
                 {
                     consoleWrapper.WriteLine("Do you (h)it or (s)tay?");
-                    input = Console.ReadKey().KeyChar.ToString();
+                    input = consoleWrapper.GetInput();
                     consoleWrapper.WriteLine("");
                 }
 
@@ -95,14 +111,14 @@ namespace Blackjack
                 if (money >= 1000)
                 {
                     consoleWrapper.WriteLine("You win!");
-                    Console.ReadKey();
+                    consoleWrapper.GetInput();
                     return;
                 }
             }
 
 
             consoleWrapper.WriteLine("You lose.");
-            Console.ReadKey();
+            consoleWrapper.GetInput();
         }
 
         private static int GetCardValue(int card)
