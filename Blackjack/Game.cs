@@ -14,7 +14,7 @@ namespace Blackjack
             _consoleWrapper = consoleWrapper;
         }
 
-        public void Go()
+        public void Play()
         {
             _money = 500;
             _consoleWrapper.WriteLine("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000.");
