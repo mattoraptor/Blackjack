@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Blackjack;
 using NUnit.Framework;
 
@@ -31,6 +32,15 @@ namespace BlackjackTests
                 Does.StartWith("What would you like to wager ($1 to $50)?"));
             Assert.That(consoleWrapper.Lines[2],
                 Does.StartWith("Your cards are "));
+        }
+
+        [Test]
+        public void AsksForWagerOnEveryHand()
+        {
+            var consoleWrapper = new TestConsoleWrapper();
+            Program.Go(consoleWrapper);
+            var count = consoleWrapper.Lines.Count(line => line.Equals("What would you like to wager ($1 to $50)?"));
+            Assert.That(count, Is.GreaterThan(1));
         }
 
         [Test]

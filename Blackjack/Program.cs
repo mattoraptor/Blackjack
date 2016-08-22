@@ -33,9 +33,9 @@ namespace Blackjack
         {
             var money = 500;
             consoleWrapper.WriteLine("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000.");
-            consoleWrapper.WriteLine("What would you like to wager ($1 to $50)?");
             while (money > 0)
             {
+                consoleWrapper.WriteLine("What would you like to wager ($1 to $50)?");
                 var wager = 25;
                 var yourHand = GetNewHand();
 
