@@ -4,14 +4,6 @@ using NUnit.Framework;
 
 namespace BlackjackTests
 {
-    public class TestCardGenerator : ICardGenerator
-    {
-        public int NextCard()
-        {
-            return 10;
-        }
-    }
-
     [TestFixture]
     public class Tests
     {
