@@ -23,17 +23,21 @@ namespace BlackjackTests
     public class Tests
     {
         [Test]
+        public void AfterWelcomeStartsNewHand()
+        {
+            var consoleWrapper = new TestConsoleWrapper();
+            Program.Go(consoleWrapper);
+            Assert.That(consoleWrapper.Lines[1],
+                Does.StartWith("Your cards are "));
+        }
+
+        [Test]
         public void PrintsWelcomeMessageOnStartOfGame()
         {
             var consoleWrapper = new TestConsoleWrapper();
             Program.Go(consoleWrapper);
             Assert.That(consoleWrapper.Lines[0],
                 Is.EqualTo("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000."));
-        }
-
-        [Test]
-        public void StartOfHandAsksForWager()
-        {
         }
     }
 }
