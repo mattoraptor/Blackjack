@@ -32,7 +32,7 @@ namespace Blackjack
             _consoleWrapper.GetInput();
         }
 
-        private void PlayHand()
+        public void PlayHand()
         {
             _consoleWrapper.WriteLine("What would you like to wager ($1 to $50)?");
             var wager = 25;
