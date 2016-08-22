@@ -7,6 +7,11 @@ namespace BlackjackTests
     public class Tests
     {
         [Test]
+        public void StartOfHandAsksForWager()
+        {
+        }
+
+        [Test]
         public void Test()
         {
             var program = new Program();

@@ -2,35 +2,47 @@
 
 namespace Blackjack
 {
+    public class ConsoleWrapper
+    {
+        public void WriteLine(string line)
+        {
+            Console.WriteLine(line);
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
         {
             var money = 500;
-            Console.WriteLine("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000.");
+            var consoleWrapper = new ConsoleWrapper();
+            consoleWrapper.WriteLine("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000.");
 
             while (money > 0)
             {
+                var wager = 25;
                 var yourHand = GetNewHand();
 
-                Console.WriteLine($"Your cards are {GetCardName(yourHand.Item1)} and {GetCardName(yourHand.Item2)}");
+                consoleWrapper.WriteLine(
+                    $"Your cards are {GetCardName(yourHand.Item1)} and {GetCardName(yourHand.Item2)}");
 
                 var dealerHand = GetNewHand();
-                Console.WriteLine($"The dealer is showing a {GetCardName(dealerHand.Item1)}. Do you (h)it or (s)tay?");
+                consoleWrapper.WriteLine(
+                    $"The dealer is showing a {GetCardName(dealerHand.Item1)}. Do you (h)it or (s)tay?");
 
                 var input = Console.ReadKey().KeyChar.ToString();
-                Console.WriteLine();
+                consoleWrapper.WriteLine("");
                 while (input != "h" && input != "s")
                 {
-                    Console.WriteLine("Do you (h)it or (s)tay?");
+                    consoleWrapper.WriteLine("Do you (h)it or (s)tay?");
                     input = Console.ReadKey().KeyChar.ToString();
-                    Console.WriteLine();
+                    consoleWrapper.WriteLine("");
                 }
 
                 if (input == "s")
                 {
-                    Console.WriteLine(Environment.NewLine +
-                                      $"The dealer flips their other card over. It's a {GetCardName(dealerHand.Item2)}.");
+                    consoleWrapper.WriteLine(Environment.NewLine +
+                                             $"The dealer flips their other card over. It's a {GetCardName(dealerHand.Item2)}.");
                 }
                 var newCard = 0;
                 if (input == "h")
@@ -42,7 +54,7 @@ namespace Blackjack
                     {
                         n = "n";
                     }
-                    Console.WriteLine($"The dealer slides another card to you. It's a{n} {GetCardName(newCard)}.");
+                    consoleWrapper.WriteLine($"The dealer slides another card to you. It's a{n} {GetCardName(newCard)}.");
                 }
 
                 var yourCards = GetCardValue(yourHand.Item1) + GetCardValue(yourHand.Item2) + GetCardValue(newCard);
@@ -57,38 +69,39 @@ namespace Blackjack
                     {
                         n = "n";
                     }
-                    Console.WriteLine($"The dealer adds another card to their hand. It's a{n} {GetCardName(newCard)}.");
+                    consoleWrapper.WriteLine(
+                        $"The dealer adds another card to their hand. It's a{n} {GetCardName(newCard)}.");
                     dealersCards += newCard;
                 }
 
                 if (yourCards < dealersCards || yourCards > 21)
                 {
-                    money -= 25;
+                    money -= wager;
                     var loseMessage = yourCards > 21 ? "You busted!" : "You lost!";
-                    Console.WriteLine(
+                    consoleWrapper.WriteLine(
                         $"You had {yourCards} and dealer had {dealersCards}. {loseMessage} You now have ${money} (-$25)");
                 }
                 else if (yourCards == dealersCards)
                 {
-                    Console.WriteLine(
+                    consoleWrapper.WriteLine(
                         $"You had {yourCards} and dealer had {dealersCards}. It's a push! You now have ${money} (+$0))");
                 }
                 else
                 {
-                    money += 25;
-                    Console.WriteLine(
+                    money += wager;
+                    consoleWrapper.WriteLine(
                         $"You had {yourCards} and dealer had {dealersCards}. You won! You now have ${money} (+$25).");
                 }
                 if (money >= 1000)
                 {
-                    Console.WriteLine("You win!");
+                    consoleWrapper.WriteLine("You win!");
                     Console.ReadKey();
                     return;
                 }
             }
 
 
-            Console.WriteLine("You lose.");
+            consoleWrapper.WriteLine("You lose.");
             Console.ReadKey();
         }
 
