@@ -23,11 +23,13 @@ namespace BlackjackTests
     public class Tests
     {
         [Test]
-        public void AfterWelcomeStartsNewHand()
+        public void AfterWelcomeStartsNewHandAndAsksForWager()
         {
             var consoleWrapper = new TestConsoleWrapper();
             Program.Go(consoleWrapper);
             Assert.That(consoleWrapper.Lines[1],
+                Does.StartWith("What would you like to wager ($1 to $50)?"));
+            Assert.That(consoleWrapper.Lines[2],
                 Does.StartWith("Your cards are "));
         }
 
