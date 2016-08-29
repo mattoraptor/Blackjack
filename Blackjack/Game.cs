@@ -106,7 +106,7 @@ namespace Blackjack
             {
                 _money += wager;
                 _consoleWrapper.WriteLine(
-                    $"You had {yourCards} and dealer had {dealersCards}. You won! You now have ${_money} (+$25).");
+                    $"You had {yourCards} and dealer had {dealersCards}. You won! You now have ${_money} (+${wager}).");
             }
         }
 

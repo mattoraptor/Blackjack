@@ -47,12 +47,22 @@ namespace BlackjackTests
         }
 
         [Test]
-        public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage()
+        public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage_LosingCondition()
         {
             _consoleWrapper.Number = 23;
             _game.PlayHand();
 
-            Assert.True(_consoleWrapper.Lines.Any(line => line.EndsWith("$23)")));
+            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 30 and dealer had 20. You busted! You now have $-23 (-$23)");
+        }
+
+        [Test]
+        public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage_WinningCondition()
+        {
+            _cardGenerator.AddCards(10,10,10,7,1,1);
+            _consoleWrapper.Number = 23;
+            _game.PlayHand();
+
+            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 21 and dealer had 17. You won! You now have $23 (+$23).");
         }
 
         [Test]
