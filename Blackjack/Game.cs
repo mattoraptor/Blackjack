@@ -7,6 +7,7 @@ namespace Blackjack
         private readonly ICardGenerator _cardGenerator;
         private readonly IConsoleWrapper _consoleWrapper;
         private int _money;
+        private readonly double _payoutRatio = 1.5;
 
         public Game(IConsoleWrapper consoleWrapper, ICardGenerator cardGenerator)
         {
@@ -103,6 +104,7 @@ namespace Blackjack
             }
             else
             {
+                wager = (int)Math.Floor(wager*_payoutRatio);
                 _money += wager;
                 _consoleWrapper.WriteLine(
                     $"You had {yourCards} and dealer had {dealersCards}. You won! You now have ${_money} (+${wager}).");

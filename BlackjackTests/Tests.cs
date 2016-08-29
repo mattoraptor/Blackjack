@@ -59,10 +59,12 @@ namespace BlackjackTests
         public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage_WinningCondition()
         {
             _cardGenerator.AddCards(10,10,10,7,1,1);
-            _consoleWrapper.Number = 23;
+            _consoleWrapper.Number = 10;
             _game.PlayHand();
 
-            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 21 and dealer had 17. You won! You now have $23 (+$23).");
+            int expected = 15;
+            CollectionAssert.Contains(_consoleWrapper.Lines,
+                $"You had 21 and dealer had 17. You won! You now have ${expected} (+${expected}).");
         }
 
         [Test]

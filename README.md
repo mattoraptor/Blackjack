@@ -10,6 +10,9 @@
 `runcoverage.bat` will run nunit tests and show a report showing your current code coverage
 
 
-## First Story - In Progress
+## First Story - Done
 Player can choose wager between 1 and 50, and it uses the wager correctly in the game.
-We still need to test the winning situation, as well as the subtraction.
+Also the wager is clamped to the allowed range.
+
+## Second Story - In Progress
+Wagers are paid out 3:2 (wagering $100 pays $150 on a win). Losing costs what you wager.
