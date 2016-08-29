@@ -97,11 +97,8 @@ namespace Blackjack
             }
             else if (dealersCards > 21)
             {
-                wager = (int)Math.Floor(wager * _payoutRatio);
-                _money += wager;
                 var winMessage = "The dealer busted!";
-                _consoleWrapper.WriteLine(
-                    $"You had {yourCards} and dealer had {dealersCards}. {winMessage} You now have ${_money} (+${wager}).");
+                DoYouWon(wager, yourCards, dealersCards, winMessage);
             }
             else if (yourCards < dealersCards )
             {
@@ -116,12 +113,17 @@ namespace Blackjack
             }
             else
             {
-                wager = (int)Math.Floor(wager*_payoutRatio);
-                _money += wager;
                 var winMessage = "You won!";
-                _consoleWrapper.WriteLine(
-                    $"You had {yourCards} and dealer had {dealersCards}. {winMessage} You now have ${_money} (+${wager}).");
+                DoYouWon(wager, yourCards, dealersCards, winMessage);
             }
+        }
+
+        private void DoYouWon(int wager, int yourCards, int dealersCards, string winMessage)
+        {
+            wager = (int) Math.Floor(wager*_payoutRatio);
+            _money += wager;
+            _consoleWrapper.WriteLine(
+                $"You had {yourCards} and dealer had {dealersCards}. {winMessage} You now have ${_money} (+${wager}).");
         }
 
         private void DoYouLost(int wager, int yourCards, int dealersCards, string loseMessage)
