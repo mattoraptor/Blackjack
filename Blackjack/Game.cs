@@ -90,25 +90,45 @@ namespace Blackjack
                 dealersCards += newCard;
             }
 
-            if (yourCards < dealersCards || yourCards > 21)
+            if (yourCards > 21)
             {
-                _money -= wager;
-                var loseMessage = yourCards > 21 ? "You busted!" : "You lost!";
+                var loseMessage = "You busted!";
+                DoYouLost(wager, yourCards, dealersCards, loseMessage);
+            }
+            else if (dealersCards > 21)
+            {
+                wager = (int)Math.Floor(wager * _payoutRatio);
+                _money += wager;
+                var winMessage = "The dealer busted!";
                 _consoleWrapper.WriteLine(
-                    $"You had {yourCards} and dealer had {dealersCards}. {loseMessage} You now have ${_money} (-${wager})");
+                    $"You had {yourCards} and dealer had {dealersCards}. {winMessage} You now have ${_money} (+${wager}).");
+            }
+            else if (yourCards < dealersCards )
+            {
+                var loseMessage = "You lost!";
+                DoYouLost(wager, yourCards, dealersCards, loseMessage);
             }
             else if (yourCards == dealersCards)
             {
+                var itSAPush = "It's a push!";
                 _consoleWrapper.WriteLine(
-                    $"You had {yourCards} and dealer had {dealersCards}. It's a push! You now have ${_money} (+$0))");
+                    $"You had {yourCards} and dealer had {dealersCards}. {itSAPush} You now have ${_money} (+$0))");
             }
             else
             {
                 wager = (int)Math.Floor(wager*_payoutRatio);
                 _money += wager;
+                var winMessage = "You won!";
                 _consoleWrapper.WriteLine(
-                    $"You had {yourCards} and dealer had {dealersCards}. You won! You now have ${_money} (+${wager}).");
+                    $"You had {yourCards} and dealer had {dealersCards}. {winMessage} You now have ${_money} (+${wager}).");
             }
+        }
+
+        private void DoYouLost(int wager, int yourCards, int dealersCards, string loseMessage)
+        {
+            _money -= wager;
+            _consoleWrapper.WriteLine(
+                $"You had {yourCards} and dealer had {dealersCards}. {loseMessage} You now have ${_money} (-${wager})");
         }
 
         public int GetWager()

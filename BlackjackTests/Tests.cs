@@ -56,6 +56,16 @@ namespace BlackjackTests
         }
 
         [Test]
+        public void LoseByHavingLowerHand()
+        {
+            _cardGenerator.AddCards(5, 10, 10, 10, 1);
+            _consoleWrapper.Number = 10;
+            _game.PlayHand();
+            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 16 and dealer had 20. You lost! You now have $-10 (-$10)");
+
+        }
+
+        [Test]
         public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage_WinningCondition()
         {
             _cardGenerator.AddCards(10,10,10,7,1,1);
@@ -93,6 +103,18 @@ namespace BlackjackTests
 
             Assert.That(result, Is.EqualTo(1));
             CollectionAssert.Contains(_consoleWrapper.Lines, "You entered below the minimum wager. Wager set to $1.");
+        }
+
+        [Test]
+        public void YouWinIfTheDealerBusts()
+        {
+            _cardGenerator.AddCards(10, 10, 10, 6, 1, 10);
+            _consoleWrapper.Number = 10;
+            _game.PlayHand();
+
+            int expected = 15;
+            CollectionAssert.Contains(_consoleWrapper.Lines,
+                $"You had 21 and dealer had 26. The dealer busted! You now have ${expected} (+${expected}).");
         }
     }
 }
