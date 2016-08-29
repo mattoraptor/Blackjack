@@ -72,5 +72,25 @@ namespace BlackjackTests
             Assert.That(_consoleWrapper.Lines[0],
                 Is.EqualTo("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000."));
         }
+
+        [Test]
+        public void BidMaxWager_IfWageringAboveLimit()
+        {
+            _consoleWrapper.Number = 999;
+            var result = _game.GetWager();
+
+            Assert.That(result, Is.EqualTo(50));
+            CollectionAssert.Contains(_consoleWrapper.Lines, "You entered above the maximum wager. Wager set to $50.");
+        }
+
+        [Test]
+        public void BidMinWager_IfWagerBelowLimit()
+        {
+            _consoleWrapper.Number = -999;
+            var result = _game.GetWager();
+
+            Assert.That(result, Is.EqualTo(1));
+            CollectionAssert.Contains(_consoleWrapper.Lines, "You entered below the minimum wager. Wager set to $1.");
+        }
     }
 }

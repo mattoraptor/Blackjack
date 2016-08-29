@@ -35,8 +35,7 @@ namespace Blackjack
 
         public void PlayHand()
         {
-            _consoleWrapper.WriteLine("What would you like to wager ($1 to $50)?");
-            var wager = _consoleWrapper.GetNumber();
+            var wager = GetWager();
             var yourHand = GetNewHand();
 
             _consoleWrapper.WriteLine(
@@ -108,6 +107,22 @@ namespace Blackjack
                 _consoleWrapper.WriteLine(
                     $"You had {yourCards} and dealer had {dealersCards}. You won! You now have ${_money} (+${wager}).");
             }
+        }
+
+        public int GetWager()
+        {
+            _consoleWrapper.WriteLine("What would you like to wager ($1 to $50)?");
+            var wager = _consoleWrapper.GetNumber();
+            if (wager > 50)
+            {
+                _consoleWrapper.WriteLine("You entered above the maximum wager. Wager set to $50.");
+                wager = 50;
+            } else if (wager < 1)
+            {
+                _consoleWrapper.WriteLine("You entered below the minimum wager. Wager set to $1.");
+                wager = 1;
+            }
+            return wager;
         }
 
         private static string GetCardName(int card)
