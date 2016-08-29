@@ -13,6 +13,7 @@ namespace BlackjackTests
             _consoleWrapper = new TestConsoleWrapper();
             _cardGenerator = new TestCardGenerator();
             _game = new Game(_consoleWrapper, _cardGenerator);
+            _game.Money = 500;
         }
 
         private Game _game;
@@ -52,7 +53,7 @@ namespace BlackjackTests
             _consoleWrapper.Number = 23;
             _game.PlayHand();
 
-            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 30 and dealer had 20. You busted! You now have $-23 (-$23)");
+            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 30 and dealer had 20. You busted! You now have $477 (-$23)");
         }
 
         [Test]
@@ -61,7 +62,7 @@ namespace BlackjackTests
             _cardGenerator.AddCards(5, 10, 10, 10, 1);
             _consoleWrapper.Number = 10;
             _game.PlayHand();
-            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 16 and dealer had 20. You lost! You now have $-10 (-$10)");
+            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 16 and dealer had 20. You lost! You now have $490 (-$10)");
 
         }
 
@@ -74,7 +75,7 @@ namespace BlackjackTests
 
             int expected = 15;
             CollectionAssert.Contains(_consoleWrapper.Lines,
-                $"You had 21 and dealer had 17. You won! You now have ${expected} (+${expected}).");
+                $"You had 21 and dealer had 17. You won! You now have ${expected+500} (+${expected}).");
         }
 
         [Test]
@@ -114,7 +115,19 @@ namespace BlackjackTests
 
             int expected = 15;
             CollectionAssert.Contains(_consoleWrapper.Lines,
-                $"You had 21 and dealer had 26. The dealer busted! You now have ${expected} (+${expected}).");
+                $"You had 21 and dealer had 26. The dealer busted! You now have ${expected+500} (+${expected}).");
+        }
+
+        [Test]
+        public void WageringMoreMoneyThanYouHaveWagersAllOfYourMoney()
+        {
+            _consoleWrapper.Number = 40;
+            var maxWager = 25;
+            _game.Money = maxWager;
+            var result = _game.GetWager();
+
+            Assert.That(result, Is.EqualTo(maxWager));
+            CollectionAssert.Contains(_consoleWrapper.Lines, $"You entered above the maximum wager. Wager set to ${maxWager}.");
         }
     }
 }

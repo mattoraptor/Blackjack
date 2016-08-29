@@ -6,7 +6,7 @@ namespace Blackjack
     {
         private readonly ICardGenerator _cardGenerator;
         private readonly IConsoleWrapper _consoleWrapper;
-        private int _money;
+        public int Money;
         private readonly double _payoutRatio = 1.5;
 
         public Game(IConsoleWrapper consoleWrapper, ICardGenerator cardGenerator)
@@ -17,12 +17,12 @@ namespace Blackjack
 
         public void Play()
         {
-            _money = 500;
+            Money = 500;
             _consoleWrapper.WriteLine("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000.");
-            while (_money > 0)
+            while (Money > 0)
             {
                 PlayHand();
-                if (_money >= 1000)
+                if (Money >= 1000)
                 {
                     _consoleWrapper.WriteLine("You win!");
                     _consoleWrapper.GetInput();
@@ -109,7 +109,7 @@ namespace Blackjack
             {
                 var itSAPush = "It's a push!";
                 _consoleWrapper.WriteLine(
-                    $"You had {yourCards} and dealer had {dealersCards}. {itSAPush} You now have ${_money} (+$0))");
+                    $"You had {yourCards} and dealer had {dealersCards}. {itSAPush} You now have ${Money} (+$0))");
             }
             else
             {
@@ -121,26 +121,32 @@ namespace Blackjack
         private void DoYouWon(int wager, int yourCards, int dealersCards, string winMessage)
         {
             wager = (int) Math.Floor(wager*_payoutRatio);
-            _money += wager;
+            Money += wager;
             _consoleWrapper.WriteLine(
-                $"You had {yourCards} and dealer had {dealersCards}. {winMessage} You now have ${_money} (+${wager}).");
+                $"You had {yourCards} and dealer had {dealersCards}. {winMessage} You now have ${Money} (+${wager}).");
         }
 
         private void DoYouLost(int wager, int yourCards, int dealersCards, string loseMessage)
         {
-            _money -= wager;
+            Money -= wager;
             _consoleWrapper.WriteLine(
-                $"You had {yourCards} and dealer had {dealersCards}. {loseMessage} You now have ${_money} (-${wager})");
+                $"You had {yourCards} and dealer had {dealersCards}. {loseMessage} You now have ${Money} (-${wager})");
         }
 
         public int GetWager()
         {
-            _consoleWrapper.WriteLine("What would you like to wager ($1 to $50)?");
+            int maxWager = 50;
+            _consoleWrapper.WriteLine($"What would you like to wager ($1 to ${maxWager})?");
             var wager = _consoleWrapper.GetNumber();
-            if (wager > 50)
+            if (wager > Money)
             {
-                _consoleWrapper.WriteLine("You entered above the maximum wager. Wager set to $50.");
-                wager = 50;
+                _consoleWrapper.WriteLine($"You entered above the maximum wager. Wager set to ${ Money}.");
+                wager = Money;
+            }
+            if (wager > maxWager)
+            {
+                _consoleWrapper.WriteLine($"You entered above the maximum wager. Wager set to ${maxWager}.");
+                wager = maxWager;
             } else if (wager < 1)
             {
                 _consoleWrapper.WriteLine("You entered below the minimum wager. Wager set to $1.");
