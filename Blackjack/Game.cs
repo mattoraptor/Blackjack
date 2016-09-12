@@ -6,8 +6,8 @@ namespace Blackjack
     {
         private readonly ICardGenerator _cardGenerator;
         private readonly IConsoleWrapper _consoleWrapper;
-        public int Money;
         private readonly double _payoutRatio = 1.5;
+        public int Money;
 
         public Game(IConsoleWrapper consoleWrapper, ICardGenerator cardGenerator)
         {
@@ -48,7 +48,7 @@ namespace Blackjack
 
             var input = _consoleWrapper.GetInput();
             _consoleWrapper.WriteLine("");
-            while (input != "h" && input != "s")
+            while ((input != "h") && (input != "s"))
             {
                 _consoleWrapper.WriteLine("Do you (h)it or (s)tay?");
                 input = _consoleWrapper.GetInput();
@@ -56,19 +56,15 @@ namespace Blackjack
             }
 
             if (input == "s")
-            {
                 _consoleWrapper.WriteLine(Environment.NewLine +
                                           $"The dealer flips their other card over. It's a {GetCardName(dealerHand.Item2)}.");
-            }
             var newCard = 0;
             if (input == "h")
             {
                 newCard = _cardGenerator.NextCard();
                 var n = "";
                 if (newCard == 1)
-                {
                     n = "n";
-                }
                 _consoleWrapper.WriteLine(
                     $"The dealer slides another card to you. It's a{n} {GetCardName(newCard)}.");
             }
@@ -82,9 +78,7 @@ namespace Blackjack
                 newCard = _cardGenerator.NextCard();
                 var n = "";
                 if (newCard == 1)
-                {
                     n = "n";
-                }
                 _consoleWrapper.WriteLine(
                     $"The dealer adds another card to their hand. It's a{n} {GetCardName(newCard)}.");
                 dealersCards += newCard;
@@ -100,7 +94,7 @@ namespace Blackjack
                 var winMessage = "The dealer busted!";
                 DoYouWon(wager, yourCards, dealersCards, winMessage);
             }
-            else if (yourCards < dealersCards )
+            else if (yourCards < dealersCards)
             {
                 var loseMessage = "You lost!";
                 DoYouLost(wager, yourCards, dealersCards, loseMessage);
@@ -135,19 +129,20 @@ namespace Blackjack
 
         public int GetWager()
         {
-            int maxWager = 50;
+            var maxWager = 50;
             _consoleWrapper.WriteLine($"What would you like to wager ($1 to ${maxWager})?");
             var wager = _consoleWrapper.GetNumber();
             if (wager > Money)
             {
-                _consoleWrapper.WriteLine($"You entered above the maximum wager. Wager set to ${ Money}.");
+                _consoleWrapper.WriteLine($"You entered above the maximum wager. Wager set to ${Money}.");
                 wager = Money;
             }
             if (wager > maxWager)
             {
                 _consoleWrapper.WriteLine($"You entered above the maximum wager. Wager set to ${maxWager}.");
                 wager = maxWager;
-            } else if (wager < 1)
+            }
+            else if (wager < 1)
             {
                 _consoleWrapper.WriteLine("You entered below the minimum wager. Wager set to $1.");
                 wager = 1;

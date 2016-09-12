@@ -48,45 +48,6 @@ namespace BlackjackTests
         }
 
         [Test]
-        public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage_LosingCondition()
-        {
-            _consoleWrapper.Number = 23;
-            _game.PlayHand();
-
-            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 30 and dealer had 20. You busted! You now have $477 (-$23)");
-        }
-
-        [Test]
-        public void LoseByHavingLowerHand()
-        {
-            _cardGenerator.AddCards(5, 10, 10, 10, 1);
-            _consoleWrapper.Number = 10;
-            _game.PlayHand();
-            CollectionAssert.Contains(_consoleWrapper.Lines, "You had 16 and dealer had 20. You lost! You now have $490 (-$10)");
-
-        }
-
-        [Test]
-        public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage_WinningCondition()
-        {
-            _cardGenerator.AddCards(10,10,10,7,1,1);
-            _consoleWrapper.Number = 10;
-            _game.PlayHand();
-
-            int expected = 15;
-            CollectionAssert.Contains(_consoleWrapper.Lines,
-                $"You had 21 and dealer had 17. You won! You now have ${expected+500} (+${expected}).");
-        }
-
-        [Test]
-        public void PrintsWelcomeMessageOnStartOfGame()
-        {
-            _game.Play();
-            Assert.That(_consoleWrapper.Lines[0],
-                Is.EqualTo("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000."));
-        }
-
-        [Test]
         public void BidMaxWager_IfWageringAboveLimit()
         {
             _consoleWrapper.Number = 999;
@@ -107,15 +68,43 @@ namespace BlackjackTests
         }
 
         [Test]
-        public void YouWinIfTheDealerBusts()
+        public void LoseByHavingLowerHand()
         {
-            _cardGenerator.AddCards(10, 10, 10, 6, 1, 10);
+            _cardGenerator.AddCards(5, 10, 10, 10, 1);
+            _consoleWrapper.Number = 10;
+            _game.PlayHand();
+            CollectionAssert.Contains(_consoleWrapper.Lines,
+                "You had 16 and dealer had 20. You lost! You now have $490 (-$10)");
+        }
+
+        [Test]
+        public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage_LosingCondition()
+        {
+            _consoleWrapper.Number = 23;
+            _game.PlayHand();
+
+            CollectionAssert.Contains(_consoleWrapper.Lines,
+                "You had 30 and dealer had 20. You busted! You now have $477 (-$23)");
+        }
+
+        [Test]
+        public void PlayHandUsesEnteredWagerAndOutputsCorrectMessage_WinningCondition()
+        {
+            _cardGenerator.AddCards(10, 10, 10, 7, 1, 1);
             _consoleWrapper.Number = 10;
             _game.PlayHand();
 
-            int expected = 15;
+            var expected = 15;
             CollectionAssert.Contains(_consoleWrapper.Lines,
-                $"You had 21 and dealer had 26. The dealer busted! You now have ${expected+500} (+${expected}).");
+                $"You had 21 and dealer had 17. You won! You now have ${expected + 500} (+${expected}).");
+        }
+
+        [Test]
+        public void PrintsWelcomeMessageOnStartOfGame()
+        {
+            _game.Play();
+            Assert.That(_consoleWrapper.Lines[0],
+                Is.EqualTo("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000."));
         }
 
         [Test]
@@ -127,7 +116,20 @@ namespace BlackjackTests
             var result = _game.GetWager();
 
             Assert.That(result, Is.EqualTo(maxWager));
-            CollectionAssert.Contains(_consoleWrapper.Lines, $"You entered above the maximum wager. Wager set to ${maxWager}.");
+            CollectionAssert.Contains(_consoleWrapper.Lines,
+                $"You entered above the maximum wager. Wager set to ${maxWager}.");
+        }
+
+        [Test]
+        public void YouWinIfTheDealerBusts()
+        {
+            _cardGenerator.AddCards(10, 10, 10, 6, 1, 10);
+            _consoleWrapper.Number = 10;
+            _game.PlayHand();
+
+            var expected = 15;
+            CollectionAssert.Contains(_consoleWrapper.Lines,
+                $"You had 21 and dealer had 26. The dealer busted! You now have ${expected + 500} (+${expected}).");
         }
     }
 }

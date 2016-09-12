@@ -19,9 +19,7 @@ namespace BlackjackTests
         public void AddCards(params int[] cards)
         {
             foreach (var card in cards)
-            {
                 _cards.Enqueue(card);
-            }
         }
 
         private int NextCardFromList()
