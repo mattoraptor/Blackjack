@@ -43,7 +43,7 @@ namespace Blackjack
 
             var dealerHand = GetNewHand();
 
-            var input = GetInput(dealerHand);
+            var input = PlayerHitsOrStays(dealerHand);
 
             if (input == "s")
                 _consoleWrapper.WriteLine(Environment.NewLine +
@@ -59,8 +59,7 @@ namespace Blackjack
                     $"The dealer slides another card to you. It's a{n} {GetCardName(newCard)}.");
             }
 
-            var yourCards = GetCardValue(yourHand.Item1) + GetCardValue(yourHand.Item2) +
-                            GetCardValue(newCard);
+            var yourCards = getThePoints(yourHand, newCard);
             var dealersCards = GetCardValue(dealerHand.Item1) + GetCardValue(dealerHand.Item2);
 
             if (dealersCards < 17)
@@ -102,7 +101,22 @@ namespace Blackjack
             }
         }
 
-        public string GetInput(Tuple<int, int> dealerHand)
+        private int getThePoints(Tuple<int, int> yourHand, int newCard)
+        {
+            var newCardValue = GetCardValue(newCard);
+            var one = 1;
+            var eleven = 11;
+
+            var pointsIfAceIsOne = GetCardValue(yourHand.Item1) + GetCardValue(yourHand.Item2) +
+                                   (newCard == 1 ? one : newCardValue);
+            var pointsIfAceIsEleven = GetCardValue(yourHand.Item1) + GetCardValue(yourHand.Item2) +
+                                      (newCard == 1 ? eleven : newCardValue);
+            if (pointsIfAceIsEleven <= 21)
+                return pointsIfAceIsEleven;
+            return pointsIfAceIsOne;
+        }
+
+        public string PlayerHitsOrStays(Tuple<int, int> dealerHand)
         {
             _consoleWrapper.WriteLine(
                 $"The dealer is showing a {GetCardName(dealerHand.Item1)}. Do you (h)it or (s)tay?");

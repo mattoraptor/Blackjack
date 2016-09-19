@@ -21,6 +21,17 @@ namespace BlackjackTests
         private TestConsoleWrapper _consoleWrapper;
         private TestCardGenerator _cardGenerator;
 
+        private void EnqueueHit()
+        {
+            _consoleWrapper.Inputs.Enqueue("h");
+        }
+
+        private void EnqueueAZillionHits()
+        {
+            for (var i = 0; i < 1000; i++)
+                EnqueueHit();
+        }
+
         [Test]
         public void AddsCardFromCardGeneratorToYourHandAndDealersHand()
         {
@@ -47,7 +58,7 @@ namespace BlackjackTests
         {
             _consoleWrapper.Inputs.Enqueue("qwerty");
             _consoleWrapper.Inputs.Enqueue("h");
-            _game.GetInput(new Tuple<int, int>(1, 2));
+            _game.PlayerHitsOrStays(new Tuple<int, int>(1, 2));
 
             var questionCount = 0;
             foreach (var line in _consoleWrapper.Lines)
@@ -95,6 +106,34 @@ namespace BlackjackTests
             _game.PlayHand();
             CollectionAssert.Contains(_consoleWrapper.Lines,
                 "You had 16 and dealer had 20. You lost! You now have $490 (-$10)");
+        }
+
+        [Test]
+        public void PlayerAcesAreWorthElevenIfNotABust()
+        {
+            EnqueueHit();
+            // Player, Player, Dealer, Dealer, Player, Dealer
+            _cardGenerator.AddCards(5, 5, 10, 6, 1, 2);
+            _consoleWrapper.Number = 10;
+            _game.PlayHand();
+
+            var expected = 15;
+            CollectionAssert.Contains(_consoleWrapper.Lines,
+                $"You had 21 and dealer had 18. You won! You now have ${expected + 500} (+${expected}).");
+        }
+
+        [Test]
+        public void PlayerAcesAreWorthElevenIfNotABust_InOriginalHand()
+        {
+            EnqueueHit();
+            // Player, Player, Dealer, Dealer, Player, Dealer
+            _cardGenerator.AddCards(1, 5, 10, 6, 5, 2);
+            _consoleWrapper.Number = 10;
+            _game.PlayHand();
+
+            var expected = 15;
+            CollectionAssert.Contains(_consoleWrapper.Lines,
+                $"You had 21 and dealer had 18. You won! You now have ${expected + 500} (+${expected}).");
         }
 
         [Test]
@@ -165,17 +204,6 @@ namespace BlackjackTests
             var expected = 15;
             CollectionAssert.Contains(_consoleWrapper.Lines,
                 $"You had 21 and dealer had 26. The dealer busted! You now have ${expected + 500} (+${expected}).");
-        }
-
-        private void EnqueueHit()
-        {
-            _consoleWrapper.Inputs.Enqueue("h");
-        }
-
-        private void EnqueueAZillionHits()
-        {
-            for(var i =0; i < 1000; i++)
-                EnqueueHit();
         }
     }
 }
