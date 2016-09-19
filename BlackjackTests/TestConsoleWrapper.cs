@@ -5,6 +5,7 @@ namespace BlackjackTests
 {
     public class TestConsoleWrapper : IConsoleWrapper
     {
+        public Queue<string> Inputs = new Queue<string>();
         public List<string> Lines = new List<string>();
         public int Number = 50;
 
@@ -15,7 +16,7 @@ namespace BlackjackTests
 
         public string GetInput()
         {
-            return "h";
+            return Inputs.Dequeue();
         }
 
         public int GetNumber()

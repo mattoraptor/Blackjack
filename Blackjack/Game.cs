@@ -39,21 +39,11 @@ namespace Blackjack
             var wager = GetWager();
             var yourHand = GetNewHand();
 
-            _consoleWrapper.WriteLine(
-                $"Your cards are {GetCardName(yourHand.Item1)} and {GetCardName(yourHand.Item2)}");
+            ReportPlayerHand(yourHand);
 
             var dealerHand = GetNewHand();
-            _consoleWrapper.WriteLine(
-                $"The dealer is showing a {GetCardName(dealerHand.Item1)}. Do you (h)it or (s)tay?");
 
-            var input = _consoleWrapper.GetInput();
-            _consoleWrapper.WriteLine("");
-            while ((input != "h") && (input != "s"))
-            {
-                _consoleWrapper.WriteLine("Do you (h)it or (s)tay?");
-                input = _consoleWrapper.GetInput();
-                _consoleWrapper.WriteLine("");
-            }
+            var input = GetInput(dealerHand);
 
             if (input == "s")
                 _consoleWrapper.WriteLine(Environment.NewLine +
@@ -110,6 +100,28 @@ namespace Blackjack
                 var winMessage = "You won!";
                 DoYouWon(wager, yourCards, dealersCards, winMessage);
             }
+        }
+
+        public string GetInput(Tuple<int, int> dealerHand)
+        {
+            _consoleWrapper.WriteLine(
+                $"The dealer is showing a {GetCardName(dealerHand.Item1)}. Do you (h)it or (s)tay?");
+
+            var input = _consoleWrapper.GetInput();
+            _consoleWrapper.WriteLine("");
+            while ((input != "h") && (input != "s"))
+            {
+                _consoleWrapper.WriteLine("Do you (h)it or (s)tay?");
+                input = _consoleWrapper.GetInput();
+                _consoleWrapper.WriteLine("");
+            }
+            return input;
+        }
+
+        private void ReportPlayerHand(Tuple<int, int> yourHand)
+        {
+            _consoleWrapper.WriteLine(
+                $"Your cards are {GetCardName(yourHand.Item1)} and {GetCardName(yourHand.Item2)}");
         }
 
         private void DoYouWon(int wager, int yourCards, int dealersCards, string winMessage)
