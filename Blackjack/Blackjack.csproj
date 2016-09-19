@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ConsoleWrapper.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Hand.cs" />
     <Compile Include="ICardGenerator.cs" />
     <Compile Include="IConsoleWrapper.cs" />
     <Compile Include="Program.cs" />

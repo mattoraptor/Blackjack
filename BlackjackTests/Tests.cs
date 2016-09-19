@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Blackjack;
 using NUnit.Framework;
 
@@ -58,7 +57,7 @@ namespace BlackjackTests
         {
             _consoleWrapper.Inputs.Enqueue("qwerty");
             _consoleWrapper.Inputs.Enqueue("h");
-            _game.PlayerHitsOrStays(new Tuple<int, int>(1, 2));
+            _game.PlayerHitsOrStays(new Hand(1, 2));
 
             var questionCount = 0;
             foreach (var line in _consoleWrapper.Lines)
@@ -114,20 +113,6 @@ namespace BlackjackTests
             EnqueueHit();
             // Player, Player, Dealer, Dealer, Player, Dealer
             _cardGenerator.AddCards(5, 5, 10, 6, 1, 2);
-            _consoleWrapper.Number = 10;
-            _game.PlayHand();
-
-            var expected = 15;
-            CollectionAssert.Contains(_consoleWrapper.Lines,
-                $"You had 21 and dealer had 18. You won! You now have ${expected + 500} (+${expected}).");
-        }
-
-        [Test]
-        public void PlayerAcesAreWorthElevenIfNotABust_InOriginalHand()
-        {
-            EnqueueHit();
-            // Player, Player, Dealer, Dealer, Player, Dealer
-            _cardGenerator.AddCards(1, 5, 10, 6, 5, 2);
             _consoleWrapper.Number = 10;
             _game.PlayHand();
 

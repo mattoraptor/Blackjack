@@ -47,7 +47,7 @@ namespace Blackjack
 
             if (input == "s")
                 _consoleWrapper.WriteLine(Environment.NewLine +
-                                          $"The dealer flips their other card over. It's a {GetCardName(dealerHand.Item2)}.");
+                                          $"The dealer flips their other card over. It's a {GetCardName(dealerHand.Value.Item2)}.");
             var newCard = 0;
             if (input == "h")
             {
@@ -59,8 +59,8 @@ namespace Blackjack
                     $"The dealer slides another card to you. It's a{n} {GetCardName(newCard)}.");
             }
 
-            var yourCards = getThePoints(yourHand, newCard);
-            var dealersCards = GetCardValue(dealerHand.Item1) + GetCardValue(dealerHand.Item2);
+            var yourCards = yourHand.GetThePoints(newCard);
+            var dealersCards = Hand.GetCardValue(dealerHand.Value.Item1) + Hand.GetCardValue(dealerHand.Value.Item2);
 
             if (dealersCards < 17)
             {
@@ -101,25 +101,10 @@ namespace Blackjack
             }
         }
 
-        private int getThePoints(Tuple<int, int> yourHand, int newCard)
-        {
-            var newCardValue = GetCardValue(newCard);
-            var one = 1;
-            var eleven = 11;
-
-            var pointsIfAceIsOne = GetCardValue(yourHand.Item1) + GetCardValue(yourHand.Item2) +
-                                   (newCard == 1 ? one : newCardValue);
-            var pointsIfAceIsEleven = GetCardValue(yourHand.Item1) + GetCardValue(yourHand.Item2) +
-                                      (newCard == 1 ? eleven : newCardValue);
-            if (pointsIfAceIsEleven <= 21)
-                return pointsIfAceIsEleven;
-            return pointsIfAceIsOne;
-        }
-
-        public string PlayerHitsOrStays(Tuple<int, int> dealerHand)
+        public string PlayerHitsOrStays(Hand dealerHand)
         {
             _consoleWrapper.WriteLine(
-                $"The dealer is showing a {GetCardName(dealerHand.Item1)}. Do you (h)it or (s)tay?");
+                $"The dealer is showing a {GetCardName(dealerHand.Value.Item1)}. Do you (h)it or (s)tay?");
 
             var input = _consoleWrapper.GetInput();
             _consoleWrapper.WriteLine("");
@@ -132,10 +117,10 @@ namespace Blackjack
             return input;
         }
 
-        private void ReportPlayerHand(Tuple<int, int> yourHand)
+        private void ReportPlayerHand(Hand yourHand)
         {
             _consoleWrapper.WriteLine(
-                $"Your cards are {GetCardName(yourHand.Item1)} and {GetCardName(yourHand.Item2)}");
+                $"Your cards are {GetCardName(yourHand.Value.Item1)} and {GetCardName(yourHand.Value.Item2)}");
         }
 
         private void DoYouWon(int wager, int yourCards, int dealersCards, string winMessage)
@@ -189,18 +174,12 @@ namespace Blackjack
             return card.ToString();
         }
 
-        private static int GetCardValue(int card)
-        {
-            if (card > 10)
-                return 10;
-            return card;
-        }
 
-        private Tuple<int, int> GetNewHand()
+        private Hand GetNewHand()
         {
             var num1 = _cardGenerator.NextCard();
             var num2 = _cardGenerator.NextCard();
-            return new Tuple<int, int>(num1, num2);
+            return new Hand(num1, num2);
         }
     }
 }
