@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace BlackjackTests
 {
     [TestFixture]
-    public class Tests
+    public class PlayerHandTests
     {
         [SetUp]
         public void SetUp()
@@ -13,10 +13,8 @@ namespace BlackjackTests
             _consoleWrapper = new TestConsoleWrapper();
             _cardGenerator = new TestCardGenerator();
             _playerHand = new PlayerHand(_consoleWrapper, _cardGenerator);
-            _game = new Game(_consoleWrapper, _playerHand);
         }
 
-        private Game _game;
         private TestConsoleWrapper _consoleWrapper;
         private TestCardGenerator _cardGenerator;
         private PlayerHand _playerHand;
@@ -140,16 +138,6 @@ namespace BlackjackTests
                 $"You had 21 and dealer had 17. You won! You now have ${expected + 500} (+${expected}).");
         }
 
-        [Test]
-        public void PrintsWelcomeMessageOnStartOfGame()
-        {
-            _consoleWrapper.Inputs.Enqueue("\n");
-            _playerHand = new PlayerHand(_consoleWrapper, _cardGenerator, 0);
-            _game = new Game(_consoleWrapper, _playerHand);
-            _game.Play();
-            Assert.That(_consoleWrapper.Lines[0],
-                Is.EqualTo("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000."));
-        }
 
         [Test]
         public void PrintsYourHand()
