@@ -14,7 +14,6 @@ namespace BlackjackTests
             _cardGenerator = new TestCardGenerator();
             _playerHand = new PlayerHand(_consoleWrapper, _cardGenerator);
             _game = new Game(_consoleWrapper, _playerHand);
-            _playerHand.Money = 500;
         }
 
         private Game _game;
@@ -145,7 +144,7 @@ namespace BlackjackTests
         public void PrintsWelcomeMessageOnStartOfGame()
         {
             _consoleWrapper.Inputs.Enqueue("\n");
-            _playerHand.Money = 0;
+            _playerHand = new PlayerHand(_consoleWrapper, _cardGenerator, 0);
             _game = new Game(_consoleWrapper, _playerHand);
             _game.Play();
             Assert.That(_consoleWrapper.Lines[0],
@@ -168,7 +167,7 @@ namespace BlackjackTests
         {
             _consoleWrapper.Number = 40;
             var maxWager = 25;
-            _playerHand.Money = maxWager;
+            _playerHand = new PlayerHand(_consoleWrapper, _cardGenerator, maxWager);
             var result = _playerHand.GetWager();
 
             Assert.That(result, Is.EqualTo(maxWager));

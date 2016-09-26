@@ -8,7 +8,7 @@ namespace Blackjack
         private readonly IConsoleWrapper _consoleWrapper;
         private readonly double _payoutRatio = 1.5;
 
-        public int Money;
+        private int Money;
 
         public PlayerHand(IConsoleWrapper consoleWrapper, ICardGenerator cardGenerator, int money = 500)
         {
@@ -162,6 +162,16 @@ namespace Blackjack
             if (card == 13)
                 return "King";
             return card.ToString();
+        }
+
+        public bool IsTooRich()
+        {
+            return Money >= 1000;
+        }
+
+        public bool IsNotBroke()
+        {
+            return Money > 0;
         }
     }
 }

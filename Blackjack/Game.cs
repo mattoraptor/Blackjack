@@ -14,10 +14,10 @@ namespace Blackjack
         public void Play()
         {
             _consoleWrapper.WriteLine("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000.");
-            while (_playerHand.Money > 0)
+            while (_playerHand.IsNotBroke())
             {
                 _playerHand.PlayHand();
-                if (_playerHand.Money >= 1000)
+                if (_playerHand.IsTooRich())
                 {
                     _consoleWrapper.WriteLine("You win!");
                     _consoleWrapper.GetInput();
