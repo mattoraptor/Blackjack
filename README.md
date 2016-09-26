@@ -20,3 +20,8 @@ Wagers are paid out 3:2 (wagering $100 pays $150 on a win). Losing costs what yo
 ## Third Story - In Progress
 User - Aces are worth 1 or 11. Automatically pick 11 if that is under or equal to 21.
 Dealer - If Ace as 11 is over or equal to 17, then keep as 11, otherwise Ace as 1.
+
+## Final Session
+First half - final clean up
+Second half - What lessions did we learn?
+

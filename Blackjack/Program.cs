@@ -5,7 +5,8 @@
         public static void Main(string[] args)
         {
             var consoleWrapper = new ConsoleWrapper();
-            new Game(consoleWrapper, new RandomCardGenerator()).Play();
+            ICardGenerator cardGenerator = new RandomCardGenerator();
+            new Game(consoleWrapper, new PlayerHand(consoleWrapper, cardGenerator)).Play();
         }
     }
 }

@@ -12,23 +12,19 @@ namespace BlackjackTests
         {
             _consoleWrapper = new TestConsoleWrapper();
             _cardGenerator = new TestCardGenerator();
-            _game = new Game(_consoleWrapper, _cardGenerator);
-            _game.Money = 500;
+            _playerHand = new PlayerHand(_consoleWrapper, _cardGenerator);
+            _game = new Game(_consoleWrapper, _playerHand);
+            _playerHand.Money = 500;
         }
 
         private Game _game;
         private TestConsoleWrapper _consoleWrapper;
         private TestCardGenerator _cardGenerator;
+        private PlayerHand _playerHand;
 
         private void EnqueueHit()
         {
             _consoleWrapper.Inputs.Enqueue("h");
-        }
-
-        private void EnqueueAZillionHits()
-        {
-            for (var i = 0; i < 1000; i++)
-                EnqueueHit();
         }
 
         [Test]
@@ -36,7 +32,7 @@ namespace BlackjackTests
         {
             EnqueueHit();
             _cardGenerator.Card = 3;
-            _game.PlayHand();
+            _playerHand.PlayHand();
             CollectionAssert.Contains(_consoleWrapper.Lines, "The dealer slides another card to you. It's a 3.");
             CollectionAssert.Contains(_consoleWrapper.Lines, "The dealer adds another card to their hand. It's a 3.");
         }
@@ -44,11 +40,11 @@ namespace BlackjackTests
         [Test]
         public void AfterWelcomeStartsNewHandAndAsksForWager()
         {
-            EnqueueAZillionHits();
-            _game.Play();
-            Assert.That(_consoleWrapper.Lines[1],
+            _consoleWrapper.Inputs.Enqueue("h");
+            _playerHand.PlayHand();
+            Assert.That(_consoleWrapper.Lines[0],
                 Does.StartWith("What would you like to wager ($1 to $50)?"));
-            Assert.That(_consoleWrapper.Lines[2],
+            Assert.That(_consoleWrapper.Lines[1],
                 Does.StartWith("Your cards are "));
         }
 
@@ -57,7 +53,7 @@ namespace BlackjackTests
         {
             _consoleWrapper.Inputs.Enqueue("qwerty");
             _consoleWrapper.Inputs.Enqueue("h");
-            _game.PlayerHitsOrStays(new Hand(1, 2));
+            _playerHand.PlayerHitsOrStays(new Hand(1, 2));
 
             var questionCount = 0;
             foreach (var line in _consoleWrapper.Lines)
@@ -68,19 +64,19 @@ namespace BlackjackTests
         }
 
         [Test]
-        public void AsksForWagerOnEveryHand()
+        public void AsksForWagerOnHand()
         {
-            EnqueueAZillionHits();
-            _game.Play();
+            _consoleWrapper.Inputs.Enqueue("h");
+            _playerHand.PlayHand();
             var count = _consoleWrapper.Lines.Count(line => line.Equals("What would you like to wager ($1 to $50)?"));
-            Assert.That(count, Is.GreaterThan(1));
+            Assert.That(count, Is.EqualTo(1));
         }
 
         [Test]
         public void BidMaxWager_IfWageringAboveLimit()
         {
             _consoleWrapper.Number = 999;
-            var result = _game.GetWager();
+            var result = _playerHand.GetWager();
 
             Assert.That(result, Is.EqualTo(50));
             CollectionAssert.Contains(_consoleWrapper.Lines, "You entered above the maximum wager. Wager set to $50.");
@@ -90,7 +86,7 @@ namespace BlackjackTests
         public void BidMinWager_IfWagerBelowLimit()
         {
             _consoleWrapper.Number = -999;
-            var result = _game.GetWager();
+            var result = _playerHand.GetWager();
 
             Assert.That(result, Is.EqualTo(1));
             CollectionAssert.Contains(_consoleWrapper.Lines, "You entered below the minimum wager. Wager set to $1.");
@@ -102,7 +98,7 @@ namespace BlackjackTests
             EnqueueHit();
             _cardGenerator.AddCards(5, 10, 10, 10, 1);
             _consoleWrapper.Number = 10;
-            _game.PlayHand();
+            _playerHand.PlayHand();
             CollectionAssert.Contains(_consoleWrapper.Lines,
                 "You had 16 and dealer had 20. You lost! You now have $490 (-$10)");
         }
@@ -114,7 +110,7 @@ namespace BlackjackTests
             // Player, Player, Dealer, Dealer, Player, Dealer
             _cardGenerator.AddCards(5, 5, 10, 6, 1, 2);
             _consoleWrapper.Number = 10;
-            _game.PlayHand();
+            _playerHand.PlayHand();
 
             var expected = 15;
             CollectionAssert.Contains(_consoleWrapper.Lines,
@@ -126,7 +122,7 @@ namespace BlackjackTests
         {
             EnqueueHit();
             _consoleWrapper.Number = 23;
-            _game.PlayHand();
+            _playerHand.PlayHand();
 
             CollectionAssert.Contains(_consoleWrapper.Lines,
                 "You had 30 and dealer had 20. You busted! You now have $477 (-$23)");
@@ -138,7 +134,7 @@ namespace BlackjackTests
             EnqueueHit();
             _cardGenerator.AddCards(10, 10, 10, 7, 1, 1);
             _consoleWrapper.Number = 10;
-            _game.PlayHand();
+            _playerHand.PlayHand();
 
             var expected = 15;
             CollectionAssert.Contains(_consoleWrapper.Lines,
@@ -148,7 +144,9 @@ namespace BlackjackTests
         [Test]
         public void PrintsWelcomeMessageOnStartOfGame()
         {
-            EnqueueAZillionHits();
+            _consoleWrapper.Inputs.Enqueue("\n");
+            _playerHand.Money = 0;
+            _game = new Game(_consoleWrapper, _playerHand);
             _game.Play();
             Assert.That(_consoleWrapper.Lines[0],
                 Is.EqualTo("Welcome to blackjack. You have $500. Each hand costs $25. You win at $1000."));
@@ -159,7 +157,7 @@ namespace BlackjackTests
         {
             EnqueueHit();
             _cardGenerator.AddCards(2, 3, 4);
-            _game.PlayHand();
+            _playerHand.PlayHand();
 
             CollectionAssert.Contains(_consoleWrapper.Lines,
                 $"Your cards are {2} and {3}");
@@ -170,8 +168,8 @@ namespace BlackjackTests
         {
             _consoleWrapper.Number = 40;
             var maxWager = 25;
-            _game.Money = maxWager;
-            var result = _game.GetWager();
+            _playerHand.Money = maxWager;
+            var result = _playerHand.GetWager();
 
             Assert.That(result, Is.EqualTo(maxWager));
             CollectionAssert.Contains(_consoleWrapper.Lines,
@@ -184,7 +182,7 @@ namespace BlackjackTests
             EnqueueHit();
             _cardGenerator.AddCards(10, 10, 10, 6, 1, 10);
             _consoleWrapper.Number = 10;
-            _game.PlayHand();
+            _playerHand.PlayHand();
 
             var expected = 15;
             CollectionAssert.Contains(_consoleWrapper.Lines,
